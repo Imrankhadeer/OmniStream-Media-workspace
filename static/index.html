@@ -768,14 +768,108 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
 @media(max-width:620px){.downloads-tabs{overflow-x:auto}.downloads-tab{white-space:nowrap}.range-card-head{align-items:flex-start}}
 
 /* Time Input Group (Integrated HH:MM:SS) */
-.time-group{display:flex;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 8px;width:100%;max-width:220px;transition:border-color .15s ease}
-.time-group:focus-within{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.time-part{width:36px;border:0;background:transparent;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;text-align:center;padding:4px 0;-moz-appearance:textfield;appearance:textfield}
-.time-part::-webkit-outer-spin-button,.time-part::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
-.time-part:focus{outline:none;background:var(--accent-dim);border-radius:4px;color:var(--accent)}
-.time-sep{color:var(--muted);font-weight:700;user-select:none;font-family:'IBM Plex Mono',monospace;padding:0 2px}
-.time-quick-btn{background:transparent;border:0;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;padding:2px 6px;border-radius:4px;margin-left:auto;transition:all .15s ease}
-.time-quick-btn:hover{color:var(--text);background:var(--hover)}
+.field-grid .time-group,
+.time-group{
+  display:inline-flex!important;
+  align-items:center!important;
+  background:var(--input)!important;
+  border:1px solid var(--line)!important;
+  border-radius:8px!important;
+  height:44px!important;
+  min-height:44px!important;
+  max-height:44px!important;
+  padding:0 12px!important;
+  width:100%!important;
+  max-width:240px!important;
+  box-sizing:border-box!important;
+  gap:0!important;
+  transition:border-color .15s ease,box-shadow .15s ease!important;
+}
+.field-grid .time-group:focus-within,
+.time-group:focus-within{
+  border-color:var(--accent)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent)!important;
+}
+.field-grid .time-group input,
+.field-grid .time-group input.time-part,
+.time-group input.time-part{
+  width:26px!important;
+  min-width:26px!important;
+  max-width:26px!important;
+  height:26px!important;
+  min-height:26px!important;
+  max-height:26px!important;
+  border:0!important;
+  border-width:0!important;
+  border-style:none!important;
+  border-color:transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--text)!important;
+  font-family:'IBM Plex Mono',monospace!important;
+  font-size:15px!important;
+  font-weight:600!important;
+  text-align:center!important;
+  padding:0!important;
+  margin:0!important;
+  box-shadow:none!important;
+  outline:none!important;
+  -webkit-appearance:none!important;
+  -moz-appearance:textfield!important;
+  appearance:textfield!important;
+  transition:color .15s ease!important;
+}
+.field-grid .time-group input::-webkit-outer-spin-button,
+.field-grid .time-group input::-webkit-inner-spin-button,
+.time-group input.time-part::-webkit-outer-spin-button,
+.time-group input.time-part::-webkit-inner-spin-button{
+  -webkit-appearance:none!important;
+  margin:0!important;
+  display:none!important;
+}
+.field-grid .time-group input:focus,
+.field-grid .time-group input:focus-visible,
+.time-group input.time-part:focus,
+.time-group input.time-part:focus-visible{
+  border:0!important;
+  border-width:0!important;
+  outline:none!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  color:var(--accent)!important;
+}
+.time-sep{
+  color:var(--muted)!important;
+  font-weight:600!important;
+  font-family:'IBM Plex Mono',monospace!important;
+  font-size:15px!important;
+  padding:0 3px!important;
+  user-select:none!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  line-height:1!important;
+  flex-shrink:0!important;
+}
+.time-quick-btn{
+  background:transparent!important;
+  border:0!important;
+  color:var(--muted)!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  cursor:pointer!important;
+  padding:3px 8px!important;
+  border-radius:4px!important;
+  margin-left:auto!important;
+  transition:all .15s ease!important;
+  flex-shrink:0!important;
+  height:auto!important;
+  line-height:1.2!important;
+}
+.time-quick-btn:hover{
+  color:var(--text)!important;
+  background:var(--hover)!important;
+}
 
 /* Modern Format Switcher */
 .format-category-tabs{display:inline-flex;gap:4px;margin-bottom:12px;background:var(--panel2);padding:4px;border-radius:8px;border:1px solid var(--line)}
@@ -833,8 +927,8 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
 .gallery-fallback.fallback-other .gallery-fallback-icon{color:#94a3b8;border-color:rgba(148,163,184,0.25)}
 .gallery-fallback-label{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);opacity:0.85;font-family:'IBM Plex Mono',monospace}
 .gallery-card-icon{font-size:42px;color:var(--muted);opacity:.75}
-.gallery-type-tag{position:absolute;top:8px;left:8px;padding:3px 7px;border-radius:4px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(0,0,0,.7);color:#fff;backdrop-filter:blur(4px)}
-.gallery-size-tag{position:absolute;bottom:8px;right:8px;padding:2px 6px;border-radius:4px;font-size:10px;font-family:'IBM Plex Mono',monospace;background:rgba(0,0,0,.7);color:#fff}
+.gallery-type-tag{position:absolute;top:8px;left:8px;padding:3px 7px;border-radius:4px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(0,0,0,.7);color:#fff;backdrop-filter:blur(4px);z-index:5}
+.gallery-size-tag{position:absolute;bottom:8px;right:8px;padding:2px 6px;border-radius:4px;font-size:10px;font-family:'IBM Plex Mono',monospace;background:rgba(0,0,0,.7);color:#fff;z-index:5}
 .gallery-card-body{padding:14px;display:flex;flex-direction:column;flex:1}
 .gallery-card-name{font-size:13px;font-weight:700;color:var(--text);word-break:break-word;line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .gallery-card-meta{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-bottom:12px}
@@ -949,11 +1043,11 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                       <div>
                         <label class="field-label">START TIME (HH:MM:SS)</label>
                         <div class="time-group">
-                          <input type="number" id="dlStartH" class="time-part" min="0" max="99" value="00" placeholder="00" oninput="fixTimeInput(this, 99)">
+                          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="dlStartH" class="time-part" data-max="99" value="00" placeholder="00" aria-label="Start Hours">
                           <span class="time-sep">:</span>
-                          <input type="number" id="dlStartM" class="time-part" min="0" max="59" value="00" placeholder="00" oninput="fixTimeInput(this, 59)">
+                          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="dlStartM" class="time-part" data-max="59" value="00" placeholder="00" aria-label="Start Minutes">
                           <span class="time-sep">:</span>
-                          <input type="number" id="dlStartS" class="time-part" min="0" max="59" value="00" placeholder="00" oninput="fixTimeInput(this, 59)">
+                          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="dlStartS" class="time-part" data-max="59" value="00" placeholder="00" aria-label="Start Seconds">
                           <button type="button" class="time-quick-btn" onclick="resetTimeGroup('dlStart')">Reset</button>
                         </div>
                         <input id="downloadStartTime" type="hidden" value="00:00:00">
@@ -961,11 +1055,11 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                       <div>
                         <label class="field-label">END TIME (HH:MM:SS)</label>
                         <div class="time-group">
-                          <input type="number" id="dlEndH" class="time-part" min="0" max="99" value="00" placeholder="00" oninput="fixTimeInput(this, 99)">
+                          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="dlEndH" class="time-part" data-max="99" value="00" placeholder="00" aria-label="End Hours">
                           <span class="time-sep">:</span>
-                          <input type="number" id="dlEndM" class="time-part" min="0" max="59" value="02" placeholder="02" oninput="fixTimeInput(this, 59)">
+                          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="dlEndM" class="time-part" data-max="59" value="02" placeholder="02" aria-label="End Minutes">
                           <span class="time-sep">:</span>
-                          <input type="number" id="dlEndS" class="time-part" min="0" max="59" value="30" placeholder="30" oninput="fixTimeInput(this, 59)">
+                          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="dlEndS" class="time-part" data-max="59" value="30" placeholder="30" aria-label="End Seconds">
                           <button type="button" class="time-quick-btn" onclick="resetTimeGroup('dlEnd')">Clear</button>
                         </div>
                         <input id="downloadEndTime" type="hidden" value="00:02:30">
@@ -1301,11 +1395,11 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                 <div>
                   <label class="field-label">START TIME (HH:MM:SS)</label>
                   <div class="time-group">
-                    <input type="number" id="transStartH" class="time-part" min="0" max="99" value="00" placeholder="00" oninput="fixTimeInput(this, 99)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="transStartH" class="time-part" data-max="99" value="00" placeholder="00" aria-label="Start Hours">
                     <span class="time-sep">:</span>
-                    <input type="number" id="transStartM" class="time-part" min="0" max="59" value="00" placeholder="00" oninput="fixTimeInput(this, 59)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="transStartM" class="time-part" data-max="59" value="00" placeholder="00" aria-label="Start Minutes">
                     <span class="time-sep">:</span>
-                    <input type="number" id="transStartS" class="time-part" min="0" max="59" value="00" placeholder="00" oninput="fixTimeInput(this, 59)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="transStartS" class="time-part" data-max="59" value="00" placeholder="00" aria-label="Start Seconds">
                     <button type="button" class="time-quick-btn" onclick="resetTimeGroup('transStart')">Reset</button>
                   </div>
                   <input id="transStartTime" type="hidden" value="00:00:00">
@@ -1313,11 +1407,11 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                 <div>
                   <label class="field-label">END TIME (HH:MM:SS)</label>
                   <div class="time-group">
-                    <input type="number" id="transEndH" class="time-part" min="0" max="99" value="00" placeholder="00" oninput="fixTimeInput(this, 99)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="transEndH" class="time-part" data-max="99" value="00" placeholder="00" aria-label="End Hours">
                     <span class="time-sep">:</span>
-                    <input type="number" id="transEndM" class="time-part" min="0" max="59" value="05" placeholder="05" oninput="fixTimeInput(this, 59)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="transEndM" class="time-part" data-max="59" value="05" placeholder="05" aria-label="End Minutes">
                     <span class="time-sep">:</span>
-                    <input type="number" id="transEndS" class="time-part" min="0" max="59" value="00" placeholder="00" oninput="fixTimeInput(this, 59)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" id="transEndS" class="time-part" data-max="59" value="00" placeholder="00" aria-label="End Seconds">
                     <button type="button" class="time-quick-btn" onclick="resetTimeGroup('transEnd')">Clear</button>
                   </div>
                   <input id="transEndTime" type="hidden" value="00:05:00">
@@ -1774,10 +1868,86 @@ function toggleTheme() {
 }
 
 /* Time Input Group Formatting Helpers */
+function initTimeInputs() {
+  document.querySelectorAll('.time-part').forEach(input => {
+    // Select all digits when clicked or focused for immediate typing over
+    input.addEventListener('focus', function() { this.select(); });
+    input.addEventListener('click', function() { this.select(); });
+
+    input.addEventListener('keydown', function(e) {
+      const max = parseInt(this.getAttribute('data-max') || '59', 10);
+      let val = parseInt(this.value, 10);
+      if (isNaN(val)) val = 0;
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        val = (val + 1) > max ? 0 : val + 1;
+        this.value = String(val).padStart(2, '0');
+        this.select();
+        syncTimeInputs();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        val = (val - 1) < 0 ? max : val - 1;
+        this.value = String(val).padStart(2, '0');
+        this.select();
+        syncTimeInputs();
+      } else if (e.key === ':' || e.key === 'Enter') {
+        e.preventDefault();
+        const next = this.nextElementSibling?.nextElementSibling;
+        if (next && next.classList.contains('time-part')) {
+          next.focus();
+          next.select();
+        }
+      } else if (e.key === 'Backspace' && this.value === '') {
+        const prev = this.previousElementSibling?.previousElementSibling;
+        if (prev && prev.classList.contains('time-part')) {
+          prev.focus();
+          prev.select();
+        }
+      }
+    });
+
+    input.addEventListener('input', function() {
+      // Keep only numeric characters
+      this.value = this.value.replace(/\D/g, '').slice(0, 2);
+      const max = parseInt(this.getAttribute('data-max') || '59', 10);
+      let num = parseInt(this.value, 10);
+      if (!isNaN(num) && num > max) {
+        this.value = String(max);
+      }
+      // When 2 digits are entered, auto advance to the next time segment
+      if (this.value.length === 2) {
+        const next = this.nextElementSibling?.nextElementSibling;
+        if (next && next.classList.contains('time-part')) {
+          next.focus();
+          next.select();
+        }
+      }
+      syncTimeInputs();
+    });
+
+    input.addEventListener('blur', function() {
+      let num = parseInt(this.value, 10);
+      if (isNaN(num) || num < 0) num = 0;
+      const max = parseInt(this.getAttribute('data-max') || '59', 10);
+      if (num > max) num = max;
+      this.value = String(num).padStart(2, '0');
+      syncTimeInputs();
+    });
+  });
+}
+
 function fixTimeInput(el, maxVal) {
+  let raw = el.value.trim();
+  if (raw === '') return;
+  let val = parseInt(raw, 10);
+  if (!isNaN(val) && val > maxVal) el.value = String(maxVal);
+  syncTimeInputs();
+}
+
+function padTimeInput(el) {
   let val = parseInt(el.value, 10);
   if (isNaN(val) || val < 0) val = 0;
-  if (val > maxVal) val = maxVal;
   el.value = String(val).padStart(2, '0');
   syncTimeInputs();
 }
@@ -2785,22 +2955,22 @@ function renderFiles() {
     let previewHtml = '';
     if (cat === 'video') {
       previewHtml = `
-        <video preload="metadata" src="${esc(href)}#t=0.5" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';"></video>
-        <div class="gallery-fallback fallback-video" style="display:none;">
+        <div class="gallery-fallback fallback-video">
           <div class="gallery-fallback-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
           </div>
           <span class="gallery-fallback-label">${esc(ext || 'VIDEO')}</span>
-        </div>`;
+        </div>
+        <video preload="metadata" src="${esc(href)}#t=0.5" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;" onerror="this.remove();"></video>`;
     } else if (cat === 'image') {
       previewHtml = `
-        <img src="${esc(href)}" alt="" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
-        <div class="gallery-fallback fallback-image" style="display:none;">
+        <div class="gallery-fallback fallback-image">
           <div class="gallery-fallback-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
           </div>
           <span class="gallery-fallback-label">${esc(ext || 'IMAGE')}</span>
-        </div>`;
+        </div>
+        <img src="${esc(href)}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:var(--panel2);" onerror="this.remove();">`;
     } else if (cat === 'audio') {
       previewHtml = `
         <div class="gallery-fallback fallback-audio">
@@ -3601,7 +3771,9 @@ document.addEventListener('DOMContentLoaded', () => {
   showDownloadPanel('single');
   showToolsPanel('compression');
   toggleDownloadRange();
-  toggleTranscriptionRange(); renderFormatCards();
+  toggleTranscriptionRange();
+  initTimeInputs();
+  renderFormatCards();
   bindCustomDropzone('transDropzone', dropped => setTranscriptionFileObj(dropped[0]));
   bindCustomDropzone('compressDropzone', dropped => addCompressionFileObjects(dropped));
   bindCustomDropzone('convertDropzone', dropped => addConversionFileObjects(dropped));
