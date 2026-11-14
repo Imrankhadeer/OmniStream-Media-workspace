@@ -1,0 +1,44 @@
+# Python virtual environments & bytecode
+.venv/
+env/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local user downloads & temp files
+downloads/
+*.part
+*.ytdl
+*.aria2
+.tmp_*/
+temp_*
+_temp_*
+_upload_*
+_up_comp_*
+_up_conv_*
+
+# SQLite database & journals
+*.db
+*.db-shm
+*.db-wal
+downloads.db*
+
+# Sensitive credentials & cookies
+cookies.txt
+*.cookie
+
+# Logs & server process output
+*.log
+uvicorn.log
+uvicorn_err.log
+
+# External binary dependencies
+bin/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
