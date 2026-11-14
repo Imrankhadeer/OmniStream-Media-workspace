@@ -38,6 +38,7 @@ uvicorn_err.log
 bin/
 
 # IDE & OS files
+*.res
 .vscode/
 .idea/
 .DS_Store

@@ -626,3 +626,23 @@ async def get_media_task_status(task_id: str):
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
+
+@app.get("/api/check_update")
+async def api_check_update():
+    try:
+        import updater
+        loop = asyncio.get_running_loop()
+        res = await loop.run_in_executor(None, updater.check_updates)
+        return res
+    except Exception as e:
+        return {"error": str(e), "message": "Failed to check updates"}
+
+@app.post("/api/perform_update")
+async def api_perform_update():
+    try:
+        import updater
+        loop = asyncio.get_running_loop()
+        res = await loop.run_in_executor(None, updater.perform_update)
+        return res
+    except Exception as e:
+        return {"error": str(e), "message": "Failed to perform update"}

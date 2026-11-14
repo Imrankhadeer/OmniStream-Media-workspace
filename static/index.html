@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b0e12">
 <title>OmniStream — Download workspace</title>
+<link rel="icon" type="image/svg+xml" href="/static/logo.svg">
+<link rel="alternate icon" href="/static/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -953,7 +955,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
 <div class="shell">
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-icon">↧</div>
+      <div class="brand-icon" style="background:transparent;overflow:hidden;padding:0;"><img src="/static/logo.svg" alt="OmniStream" style="width:100%;height:100%;border-radius:10px;display:block;"></div>
       <div>omni<span>stream</span><small>MEDIA WORKSPACE</small></div>
     </div>
     <div class="nav-label">WORKSPACE</div>
@@ -1869,70 +1871,159 @@ function toggleTheme() {
 
 /* Time Input Group Formatting Helpers */
 function initTimeInputs() {
-  document.querySelectorAll('.time-part').forEach(input => {
-    // Select all digits when clicked or focused for immediate typing over
-    input.addEventListener('focus', function() { this.select(); });
-    input.addEventListener('click', function() { this.select(); });
+  document.querySelectorAll('.time-group').forEach(group => {
+    const parts = Array.from(group.querySelectorAll('.time-part'));
 
-    input.addEventListener('keydown', function(e) {
-      const max = parseInt(this.getAttribute('data-max') || '59', 10);
-      let val = parseInt(this.value, 10);
-      if (isNaN(val)) val = 0;
+    parts.forEach((input, index) => {
+      let buffer = '';
+      let bufferTimer = null;
 
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        val = (val + 1) > max ? 0 : val + 1;
-        this.value = String(val).padStart(2, '0');
+      function clearBuffer() {
+        buffer = '';
+        if (bufferTimer) {
+          clearTimeout(bufferTimer);
+          bufferTimer = null;
+        }
+      }
+
+      // Automatically select full field on focus/click so user sees the cursor cleanly
+      input.addEventListener('focus', function() {
+        clearBuffer();
         this.select();
-        syncTimeInputs();
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        val = (val - 1) < 0 ? max : val - 1;
-        this.value = String(val).padStart(2, '0');
+      });
+      input.addEventListener('click', function() {
+        clearBuffer();
         this.select();
+      });
+
+      input.addEventListener('blur', function() {
+        clearBuffer();
+        let num = parseInt(this.value, 10);
+        if (isNaN(num) || num < 0) num = 0;
+        const max = parseInt(this.getAttribute('data-max') || '59', 10);
+        if (num > max) num = max;
+        this.value = String(num).padStart(2, '0');
         syncTimeInputs();
-      } else if (e.key === ':' || e.key === 'Enter') {
-        e.preventDefault();
-        const next = this.nextElementSibling?.nextElementSibling;
-        if (next && next.classList.contains('time-part')) {
-          next.focus();
-          next.select();
-        }
-      } else if (e.key === 'Backspace' && this.value === '') {
-        const prev = this.previousElementSibling?.previousElementSibling;
-        if (prev && prev.classList.contains('time-part')) {
-          prev.focus();
-          prev.select();
-        }
-      }
-    });
+      });
 
-    input.addEventListener('input', function() {
-      // Keep only numeric characters
-      this.value = this.value.replace(/\D/g, '').slice(0, 2);
-      const max = parseInt(this.getAttribute('data-max') || '59', 10);
-      let num = parseInt(this.value, 10);
-      if (!isNaN(num) && num > max) {
-        this.value = String(max);
-      }
-      // When 2 digits are entered, auto advance to the next time segment
-      if (this.value.length === 2) {
-        const next = this.nextElementSibling?.nextElementSibling;
-        if (next && next.classList.contains('time-part')) {
-          next.focus();
-          next.select();
-        }
-      }
-      syncTimeInputs();
-    });
+      input.addEventListener('keydown', function(e) {
+        const max = parseInt(this.getAttribute('data-max') || '59', 10);
 
-    input.addEventListener('blur', function() {
-      let num = parseInt(this.value, 10);
-      if (isNaN(num) || num < 0) num = 0;
-      const max = parseInt(this.getAttribute('data-max') || '59', 10);
-      if (num > max) num = max;
-      this.value = String(num).padStart(2, '0');
-      syncTimeInputs();
+        // Arrow Right: navigate left to right
+        if (e.key === 'ArrowRight') {
+          if (index < parts.length - 1) {
+            e.preventDefault();
+            clearBuffer();
+            parts[index + 1].focus();
+            parts[index + 1].select();
+          }
+          return;
+        }
+
+        // Arrow Left: navigate right to left
+        if (e.key === 'ArrowLeft') {
+          if (index > 0) {
+            e.preventDefault();
+            clearBuffer();
+            parts[index - 1].focus();
+            parts[index - 1].select();
+          }
+          return;
+        }
+
+        // Arrow Up: increment
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          clearBuffer();
+          let val = parseInt(this.value, 10);
+          if (isNaN(val)) val = 0;
+          val = (val + 1) > max ? 0 : val + 1;
+          this.value = String(val).padStart(2, '0');
+          this.select();
+          syncTimeInputs();
+          return;
+        }
+
+        // Arrow Down: decrement
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          clearBuffer();
+          let val = parseInt(this.value, 10);
+          if (isNaN(val)) val = 0;
+          val = (val - 1) < 0 ? max : val - 1;
+          this.value = String(val).padStart(2, '0');
+          this.select();
+          syncTimeInputs();
+          return;
+        }
+
+        // Colon or Enter: jump to next section
+        if (e.key === ':' || e.key === 'Enter') {
+          e.preventDefault();
+          clearBuffer();
+          if (index < parts.length - 1) {
+            parts[index + 1].focus();
+            parts[index + 1].select();
+          }
+          return;
+        }
+
+        // Backspace: reset or retreat
+        if (e.key === 'Backspace') {
+          e.preventDefault();
+          if (buffer.length > 0 || (this.value !== '00' && this.value !== '0')) {
+            clearBuffer();
+            this.value = '00';
+            this.select();
+            syncTimeInputs();
+          } else if (index > 0) {
+            clearBuffer();
+            parts[index - 1].focus();
+            parts[index - 1].select();
+          }
+          return;
+        }
+
+        // Direct Digits 0-9: auto-changing buffer (e.g. '1' -> '01', then '0' -> '10')
+        if (/^[0-9]$/.test(e.key)) {
+          e.preventDefault();
+          const d = e.key;
+
+          if (buffer.length === 0) {
+            // First keystroke: immediately update display to '0d' (e.g. typing 1 displays 01)
+            buffer = d;
+            this.value = '0' + d;
+            syncTimeInputs();
+
+            // If digit is greater than the highest possible first digit (e.g. > 5 for 59),
+            // a second digit can never be valid, so auto-advance to next section immediately
+            const maxFirstDigit = Math.floor(max / 10);
+            if (parseInt(d, 10) > maxFirstDigit) {
+              clearBuffer();
+              if (index < parts.length - 1) {
+                parts[index + 1].focus();
+                parts[index + 1].select();
+              }
+            } else {
+              if (bufferTimer) clearTimeout(bufferTimer);
+              bufferTimer = setTimeout(clearBuffer, 1200);
+            }
+          } else {
+            // Second keystroke: combine with buffer (e.g. buffer was '1', user pressed '0' -> displays '10')
+            let combined = parseInt(buffer + d, 10);
+            if (combined > max) combined = max;
+            this.value = String(combined).padStart(2, '0');
+            clearBuffer();
+            syncTimeInputs();
+
+            // Automatically advance focus to the next section on its own (left to right)
+            if (index < parts.length - 1) {
+              parts[index + 1].focus();
+              parts[index + 1].select();
+            }
+          }
+        }
+      });
     });
   });
 }
@@ -2616,7 +2707,11 @@ async function fetchVideoPreview() {
       $('previewQualCount').textContent = `${data.formats?.length || 1} format(s)`;
     }
     if (Array.isArray(data?.formats) && data.formats.length) {
-      extractedFormats = data.formats.map(f => {
+      extractedFormats = data.formats.filter(f => {
+        const res = String(f.resolution || '').toLowerCase();
+        const fid = String(f.format_id || '').toLowerCase();
+        return res !== '144p' && res !== '144' && res !== '114p' && res !== '114' && !fid.includes('144') && !fid.includes('114');
+      }).map(f => {
         const fid = String(f.format_id ?? 'best');
         const isAudio = fid === 'audio_only' || (f.resolution && f.resolution.toLowerCase() === 'audio') || (f.label && f.label.toLowerCase().includes('audio'));
         return {

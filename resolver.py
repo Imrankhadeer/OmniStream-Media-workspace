@@ -240,6 +240,8 @@ def parse_hls_qualities(m3u8_url: str, referer: str = None):
                     
                     try:
                         h_num = int(height)
+                        if h_num <= 144:
+                            continue
                         if h_num >= 2160:
                             qlbl = f"4K UHD {h_num}p{mbps}"
                         elif h_num >= 1440:

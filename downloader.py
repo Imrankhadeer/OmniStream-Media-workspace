@@ -308,7 +308,7 @@ class DownloadManager:
 
                     for f in sorted_video_candidates:
                         h = f.get('height')
-                        if h and h not in seen_heights:
+                        if h and h > 144 and h not in seen_heights:
                             seen_heights.add(h)
                             fid = f"height_{h}"
                             # Standard labels

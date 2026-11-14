@@ -16,7 +16,7 @@ Designed desktop-first with responsive support for compact laptop displays, Omni
 
 ### 1. Universal Media Downloader
 - **Multi-Platform Support**: Seamlessly download from YouTube, X / Twitter, Reddit, ClipMotion, TikTok, Vimeo, Twitch, and generic HTTP/HLS sources.
-- **Visual Format Selector**: Automatically inspects source links and offers clean resolution options (144p, 360p, 720p HD, 1080p Full HD, 2K QHD, 4K UHD, and Audio-Only MP3).
+- **Visual Format Selector**: Automatically inspects source links and offers clean resolution options (360p, 720p HD, 1080p Full HD, 2K QHD, 4K UHD, and Audio-Only MP3).
 - **HLS & Stream Remuxing**: High-speed fragment retrieval with automatic FFmpeg assembly into clean `.mp4` or `.mp3` outputs.
 
 ### 2. Smart Queue & Asynchronous Multitasking
