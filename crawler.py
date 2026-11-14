@@ -102,7 +102,7 @@ def redgif_to_dict(g: dict) -> dict:
 
     return {
         'id': gid,
-        'title': f"RedGifs - {gid} ({g.get('userName', 'RedGifs')})",
+        'title': f"ClipMotion - {gid} ({g.get('userName', 'ClipMotion')})",
         'url': f"https://www.redgifs.com/watch/{gid}",
         'direct_stream': hd,
         'hd': hd,

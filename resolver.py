@@ -518,7 +518,7 @@ def resolve_redgifs(url: str):
                 return {
                     'stream_url': hd_url,
                     'referer': 'https://www.redgifs.com/',
-                    'title': f"RedGifs - {gif_id} ({username})",
+                    'title': f"ClipMotion - {gif_id} ({username})",
                     'thumbnail': poster,
                     'formats': formats
                 }

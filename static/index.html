@@ -1014,7 +1014,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                         <label class="field-label" for="singleCookiePlatformSelect">COOKIE PLATFORM</label>
                         <select id="singleCookiePlatformSelect" onchange="syncPlatformDropdowns(this.value)">
                           <option value="reddit">Reddit</option>
-                          <option value="redgifs">RedGIFs</option>
+                          <option value="redgifs">ClipMotion</option>
                           <option value="youtube">YouTube</option>
                           <option value="twitter">X / Twitter</option>
                           <option value="other">Other / Auto-detect</option>
@@ -1063,13 +1063,13 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
           </div>
         </div>
 
-        <!-- SUB-PANEL B: MEDIA COLLECTION (Unified Reddit & RedGIFs Studio) -->
+        <!-- SUB-PANEL B: MEDIA COLLECTION (Unified Reddit & ClipMotion Studio) -->
         <div id="downloadPanelCollection" class="download-collection-panel" hidden>
           <div class="page-title">
             <div>
-              <div class="eyebrow">REDDIT &amp; REDGIFS STUDIO</div>
-              <h1>Reddit &amp; RedGIFs Bulk Downloader</h1>
-              <p>Crawl subreddits, explore RedGIFs creators &amp; tags, manage in-memory session cookies, and batch download in accelerated 16x speed.</p>
+              <div class="eyebrow">REDDIT &amp; CLIPMOTION STUDIO</div>
+              <h1>Reddit &amp; ClipMotion Bulk Downloader</h1>
+              <p>Crawl subreddits, explore ClipMotion creators &amp; tags, manage in-memory session cookies, and batch download in accelerated 16x speed.</p>
             </div>
             <span class="keyboard-hint">MULTI-SELECT <kbd>Ctrl</kbd> + <kbd>A</kbd></span>
           </div>
@@ -1099,7 +1099,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                 <label class="field-label" for="cookiePlatformSelect" style="margin:0 0 6px;">TARGET PLATFORM</label>
                 <select id="cookiePlatformSelect" style="height:38px; padding:0 12px; font-size:12px; min-width:220px;" onchange="updateCookiePlaceholder()">
                   <option value="reddit">Reddit (18+ / NSFW / Quarantined)</option>
-                  <option value="redgifs">RedGIFs (Authenticated Session)</option>
+                  <option value="redgifs">ClipMotion (Authenticated Session)</option>
                   <option value="youtube">YouTube (Age-Restricted / Premium)</option>
                   <option value="twitter">X / Twitter (Protected Posts)</option>
                   <option value="other">Other / Multi-Domain Jar</option>
@@ -1122,7 +1122,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
             <section class="surface bulk-collector">
               <div class="extractor-tabs" role="tablist">
                 <button type="button" class="extractor-tab-btn active" id="tabBtnSocial" onclick="setExtractorTab('social')">
-                  <span class="nav-symbol" style="font-size:14px; width:auto;">❖</span> Reddit &amp; RedGIFs Explorer
+                  <span class="nav-symbol" style="font-size:14px; width:auto;">❖</span> Reddit &amp; ClipMotion Explorer
                 </button>
                 <button type="button" class="extractor-tab-btn" id="tabBtnMulti" onclick="setExtractorTab('multi')">
                   <span class="nav-symbol" style="font-size:14px; width:auto;">☰</span> Batch URLs
@@ -1135,7 +1135,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                     <label class="field-label" for="socialSourceSelect">SOURCE PLATFORM</label>
                     <select id="socialSourceSelect" style="height:58px; padding:0 14px; font-size:13px; font-weight:650;" onchange="handleSocialSourceChange()">
                       <option value="reddit">❖ Reddit Media</option>
-                      <option value="redgifs">◈ RedGIFs Explorer</option>
+                      <option value="redgifs">◈ ClipMotion Explorer</option>
                     </select>
                   </div>
                   <div>
@@ -1176,9 +1176,9 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
 
               <div id="paneMulti" class="extractor-pane" hidden>
                 <label class="field-label" for="bulkUrls">PASTE MULTIPLE MEDIA LINKS (ONE PER LINE)</label>
-                <textarea id="bulkUrls" class="bulk-url-input" placeholder="https://www.reddit.com/r/...&#10;https://www.redgifs.com/watch/...&#10;https://missav.ai/..."></textarea>
+                <textarea id="bulkUrls" class="bulk-url-input" placeholder="https://www.reddit.com/r/...&#10;https://www.youtube.com/watch?v=...&#10;https://example.com/video.mp4"></textarea>
                 <div class="bulk-collector-footer">
-                  <span class="helper">Supports Reddit, RedGIFs, MissAV, NoodleMagazine, YouTube, HLS, direct MP4.</span>
+                  <span class="helper">Supports Reddit, ClipMotion, YouTube, Vimeo, Twitter/X, HLS (.m3u8), and direct MP4/WebM.</span>
                   <button type="button" class="primary-button" onclick="bulkAddUrls()">
                     <span>＋</span> Add links <span class="button-arrow">→</span>
                   </button>
@@ -1193,7 +1193,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                 <div>
                   <span class="eyebrow">COLLECTION POOL</span>
                   <h2>Media items <span id="bulkTotal" class="bulk-count">0</span></h2>
-                  <p id="bulkSubheading">Add links or query Reddit / RedGIFs above to build your selection.</p>
+                  <p id="bulkSubheading">Add links or query Reddit / ClipMotion above to build your selection.</p>
                 </div>
                 <button type="button" class="secondary-button" onclick="bulkClearAll()">Clear collection</button>
               </div>
@@ -1202,9 +1202,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                 <select id="bulkSourceFilter" aria-label="Filter by source" onchange="renderBulkItems()">
                   <option value="all">All sources</option>
                   <option value="reddit">Reddit</option>
-                  <option value="redgifs">RedGIFs</option>
-                  <option value="missav">MissAV</option>
-                  <option value="noodle">NoodleMagazine</option>
+                  <option value="redgifs">ClipMotion</option>
                   <option value="youtube">YouTube</option>
                   <option value="other">Other</option>
                 </select>
@@ -1236,7 +1234,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
                 </div>
               </div>
               <div id="bulkItems" class="bulk-items">
-                <div class="bulk-empty"><div class="bulk-empty-icon">▤</div><strong>Your collection is empty</strong><p>Fetch from Reddit, search RedGIFs, or paste links above to start building a batch download.</p></div>
+                <div class="bulk-empty"><div class="bulk-empty-icon">▤</div><strong>Your collection is empty</strong><p>Fetch from Reddit, search ClipMotion, or paste links above to start building a batch download.</p></div>
               </div>
               <div class="bulk-bottom-bar">
                 <div><strong id="bulkFooterCount">0 items selected</strong><span>Only selected items will be included.</span></div>
@@ -3021,7 +3019,7 @@ try {
 
 const COOKIE_PLATFORM_META = {
   reddit: { label: 'Reddit', placeholder: 'Paste your raw Reddit Cookie header string (e.g. reddit_session=...; loid=...) or Netscape format' },
-  redgifs: { label: 'RedGIFs', placeholder: 'Paste your RedGIFs Cookie header string or Netscape format' },
+  redgifs: { label: 'ClipMotion', placeholder: 'Paste your ClipMotion Cookie header string or Netscape format' },
   youtube: { label: 'YouTube', placeholder: 'Paste your YouTube Cookie header string (e.g. SID=...; HSID=...; SSID=...) or Netscape format' },
   twitter: { label: 'X / Twitter', placeholder: 'Paste your X / Twitter Cookie header string (e.g. auth_token=...; ct0=...) or Netscape format' },
   other: { label: 'Multi-Domain / Other', placeholder: 'Paste raw Cookie header string or Netscape HTTP Cookie File format' }
@@ -3159,11 +3157,11 @@ function handleSocialSourceChange() {
   const source = $('socialSourceSelect')?.value || 'reddit';
   const isRedgifs = source === 'redgifs';
   $('socialQueryLabel').textContent = isRedgifs
-    ? 'SEARCH TAG, CREATOR (@USERNAME), OR REDGIFS LINK'
+    ? 'SEARCH TAG, CREATOR (@USERNAME), OR CLIP LINK'
     : 'SUBREDDIT, USERNAME, OR REDDIT POST LINK';
   $('socialQueryGlyph').textContent = isRedgifs ? '◈' : '❖';
   $('socialQueryInput').placeholder = isRedgifs
-    ? 'nature, cosplay, @username, or https://redgifs.com/watch/...'
+    ? 'nature, gaming, @username, or direct clip URL...'
     : 'r/videos, r/gifs, u/username, or https://reddit.com/r/...';
   $('socialSortSelect').innerHTML = isRedgifs
     ? '<option value="trending">Trending</option><option value="new">Latest (Newest)</option>'
@@ -3172,10 +3170,10 @@ function handleSocialSourceChange() {
     ? '<option value="24">24 GIFs / Videos</option><option value="48">48 GIFs / Videos</option><option value="12">12 GIFs / Videos</option>'
     : '<option value="25">25 media posts</option><option value="50">50 media posts</option><option value="10">10 media posts</option><option value="100">100 media posts</option>';
   $('socialHelperText').textContent = isRedgifs
-    ? 'Powered by official RedGIFs v2 API with instant HD MP4 streams.'
+    ? 'Powered by high-speed CDN with instant HD MP4 streams.'
     : 'Fetches video & GIF submissions. Uses in-memory session cookies if provided.';
   $('crawlSocialBtnIcon').textContent = isRedgifs ? '◈' : '⌕';
-  $('crawlSocialBtnLabel').textContent = isRedgifs ? 'Explore RedGIFs' : 'Fetch Reddit media';
+  $('crawlSocialBtnLabel').textContent = isRedgifs ? 'Explore ClipMotion' : 'Fetch Reddit media';
   $('bulkMessage').hidden = true;
 }
 
@@ -3202,8 +3200,6 @@ function bulkSource(url) {
   const u = url.toLowerCase();
   if (u.includes('reddit.com') || u.includes('redd.it')) return 'reddit';
   if (u.includes('redgifs.com')) return 'redgifs';
-  if (u.includes('missav')) return 'missav';
-  if (u.includes('noodlemagazine')) return 'noodle';
   if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
   if (u.includes('twitter.com') || u.includes('x.com')) return 'twitter';
   if (u.includes('.m3u8')) return 'hls';
@@ -3214,8 +3210,6 @@ function sourceSymbol(source) {
   switch (source) {
     case 'reddit': return '◉';
     case 'redgifs': return '▶';
-    case 'missav': return '★';
-    case 'noodle': return '🍜';
     case 'youtube': return '▶';
     case 'twitter': return '𝕏';
     case 'hls': return '⚡';
@@ -3251,7 +3245,7 @@ async function crawlSocialMedia() {
   const btn = $('crawlSocialBtn');
   btn.disabled = true;
   const oldHtml = btn.innerHTML;
-  btn.innerHTML = source === 'redgifs' ? '<span>⏳</span> Querying RedGIFs…' : '<span>⏳</span> Fetching Reddit…';
+  btn.innerHTML = source === 'redgifs' ? '<span>⏳</span> Querying ClipMotion…' : '<span>⏳</span> Fetching Reddit…';
   $('bulkMessage').hidden = true;
 
   try {
@@ -3275,7 +3269,7 @@ async function crawlSocialMedia() {
       bulkItems.push({
         id: bulkNextId++,
         url: it.url,
-        title: it.title || (source === 'redgifs' ? 'RedGIFs Media' : 'Reddit Media'),
+        title: it.title || (source === 'redgifs' ? 'ClipMotion Media' : 'Reddit Media'),
         source: it.source || source,
         type: it.type || 'video',
         selected: true,
@@ -3288,7 +3282,7 @@ async function crawlSocialMedia() {
     }
     $('bulkMessage').className = 'message';
     $('bulkMessage').textContent = source === 'redgifs'
-      ? `Added ${added} GIFs & videos from RedGIFs.`
+      ? `Added ${added} GIFs & videos from ClipMotion.`
       : `Added ${added} new media items from Reddit.`;
     $('bulkMessage').hidden = false;
     renderBulkItems();
@@ -3314,7 +3308,7 @@ async function crawlSocialMedia() {
         });
       });
       $('bulkMessage').className = 'message';
-      $('bulkMessage').textContent = `Demo mode: Added ${samples.length} sample RedGIFs items for "${query}".`;
+      $('bulkMessage').textContent = `Demo mode: Added ${samples.length} sample ClipMotion items for "${query}".`;
     } else {
       const clean = query.replace(/^https?:\/\/(www\.)?reddit\.com\//i, '').replace(/\/$/, '');
       const samples = [
@@ -3446,7 +3440,7 @@ function renderBulkItems() {
   $('bulkTotal').textContent = bulkItems.length;
   $('bulkSubheading').textContent = bulkItems.length
     ? `${bulkItems.length} links in this collection · ${selected} selected`
-    : 'Add links or query Reddit / RedGIFs above to build your selection.';
+    : 'Add links or query Reddit / ClipMotion above to build your selection.';
   $('bulkSelectedCount').textContent = `${selected} selected`;
   $('bulkFooterCount').textContent = `${selected} item${selected === 1 ? '' : 's'} selected`;
   $('bulkDownloadButton').disabled = selected === 0;
@@ -3459,7 +3453,7 @@ function renderBulkItems() {
   if (!visible.length) {
     $('bulkItems').innerHTML = bulkItems.length
       ? '<div class="bulk-no-results">No items match these filters. Try changing your search or filters.</div>'
-      : '<div class="bulk-empty"><div class="bulk-empty-icon">▤</div><strong>Your collection is empty</strong><p>Fetch from Reddit, search RedGIFs, or paste links above to start building a batch download.</p></div>';
+      : '<div class="bulk-empty"><div class="bulk-empty-icon">▤</div><strong>Your collection is empty</strong><p>Fetch from Reddit, search ClipMotion, or paste links above to start building a batch download.</p></div>';
     return;
   }
 
