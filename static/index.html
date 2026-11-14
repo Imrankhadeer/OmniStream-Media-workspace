@@ -159,6 +159,7 @@ input::placeholder,textarea::placeholder{color:#647266}
 .job-title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .status-badge{font:10px 'IBM Plex Mono',monospace;padding:5px 8px;border-radius:5px;background:#2e382f;color:#c4d2c2;white-space:nowrap;text-transform:capitalize}
 .status-downloading,.status-starting,.status-retrying,.status-converting{background:#30462b;color:var(--lime)}
+.status-queued{background:#3b3626;color:var(--amber)}
 .status-failed,.status-cancelled{background:#462b2b;color:#f9aaa1}
 .status-completed{background:#293e30;color:#a8e8ad}
 .progress-track{height:5px;background:#303b31;border-radius:5px;margin:14px 0 10px;overflow:hidden}
@@ -540,7 +541,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
 .job-placeholder,.job-thumb{background:var(--panel2)!important;color:var(--muted)!important;border-radius:5px!important}
 .status-badge{background:var(--hover)!important;color:var(--muted)!important;border-radius:4px!important}
 .status-downloading,.status-starting,.status-retrying,.status-converting,.status-processing{background:var(--accent-dim)!important;color:var(--accent)!important}
-.status-paused{background:color-mix(in srgb,var(--amber) 15%,var(--panel))!important;color:var(--amber)!important}
+.status-paused,.status-queued{background:color-mix(in srgb,var(--amber) 16%,var(--panel))!important;color:var(--amber)!important}
 .status-failed,.status-cancelled{background:color-mix(in srgb,var(--red) 14%,var(--panel))!important;color:var(--red)!important}
 .status-completed{background:color-mix(in srgb,var(--green) 14%,var(--panel))!important;color:var(--green)!important}
 .progress-track{background:var(--hover)!important;border-radius:3px!important}
@@ -769,8 +770,8 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
 /* Time Input Group (Integrated HH:MM:SS) */
 .time-group{display:flex;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 8px;width:100%;max-width:220px;transition:border-color .15s ease}
 .time-group:focus-within{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.time-part{width:36px;border:0;background:transparent;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;text-align:center;padding:4px 0;-moz-appearance:textfield}
-.time-part::-webkit-outer-spin-button,.time-part::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.time-part{width:36px;border:0;background:transparent;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;text-align:center;padding:4px 0;-moz-appearance:textfield;appearance:textfield}
+.time-part::-webkit-outer-spin-button,.time-part::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
 .time-part:focus{outline:none;background:var(--accent-dim);border-radius:4px;color:var(--accent)}
 .time-sep{color:var(--muted);font-weight:700;user-select:none;font-family:'IBM Plex Mono',monospace;padding:0 2px}
 .time-quick-btn{background:transparent;border:0;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;padding:2px 6px;border-radius:4px;margin-left:auto;transition:all .15s ease}
@@ -794,8 +795,8 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
 .compress-slider-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .compress-slider-title{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text)}
 .compress-slider-mode-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--accent-dim);color:var(--accent)}
-.compress-range{width:100%;height:6px;border-radius:3px;background:var(--line);outline:none;cursor:pointer;-webkit-appearance:none}
-.compress-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer;transition:transform .1s ease}
+.compress-range{width:100%;height:6px;border-radius:3px;background:var(--line);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+.compress-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer;transition:transform .1s ease}
 .compress-range::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .compress-scale-labels{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:6px}
 .compress-live-preview{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-top:14px;flex-wrap:wrap;gap:8px}
@@ -864,9 +865,9 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
     <div class="nav-label">WORKSPACE</div>
     <nav aria-label="Primary navigation">
       <button type="button" class="nav-item active" data-view="downloads" onclick="switchTab('downloads')"><span class="nav-symbol">↧</span> Downloads</button>
-      <button type="button" class="nav-item" data-view="activity" onclick="switchTab('activity')"><span class="nav-symbol">◷</span> Activity <span id="sidebarActivityCount" class="nav-bubble" hidden>0</span></button>
       <button type="button" class="nav-item" data-view="transcription" onclick="switchTab('transcription')"><span class="nav-symbol">≋</span> Transcription</button>
       <button type="button" class="nav-item" data-view="tools" onclick="switchTab('tools')"><span class="nav-symbol">⚙</span> Tools</button>
+      <button type="button" class="nav-item" data-view="activity" onclick="switchTab('activity')"><span class="nav-symbol">◷</span> Activity <span id="sidebarActivityCount" class="nav-bubble" hidden>0</span></button>
       <button type="button" class="nav-item" data-view="library" onclick="switchTab('library')"><span class="nav-symbol">▦</span> Library <span id="filesCount" class="nav-bubble">0</span></button>
     </nav>
     <div class="sidebar-bottom">
@@ -1495,6 +1496,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
             <div class="filter-tabs" role="group" aria-label="Filter downloads">
               <button type="button" class="filter active" data-filter="all" onclick="setJobFilter('all')">All <span id="allCount">0</span></button>
               <button type="button" class="filter" data-filter="active" onclick="setJobFilter('active')">In progress</button>
+              <button type="button" class="filter" data-filter="queued" onclick="setJobFilter('queued')">Queued <span id="queuedFilterCount" class="nav-bubble" hidden>0</span></button>
               <button type="button" class="filter" data-filter="completed" onclick="setJobFilter('completed')">Completed</button>
               <button type="button" class="filter" data-filter="failed" onclick="setJobFilter('failed')">Failed</button>
             </div>
@@ -1617,7 +1619,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:.7
    ========================================================== */
 const API_BASE = (location.protocol === 'file:' || !location.host) ? 'http://127.0.0.1:8000' : '';
 const $ = id => document.getElementById(id);
-const ACTIVE = ['starting','downloading','retrying','converting'];
+const ACTIVE = ['starting','downloading','retrying','converting','processing','queued'];
 
 let jobs = [];
 let files = [];
@@ -2039,8 +2041,13 @@ async function startTranscriptionDemo() {
     if (!res.ok) throw new Error(data.detail || 'Failed to start transcription');
 
     const taskId = data.task_id;
-    notice.textContent = `Transcription running (ID: ${taskId})… Extracting audio & generating SRT…`;
+    if (btn) btn.disabled = false;
+    notice.innerHTML = `<div>⚡ <strong>Transcription task started (${taskId})</strong>. Extracting audio & generating SRT…</div>
+      <div class="notice-actions" style="margin-top:6px;">
+        <button type="button" class="action-button" onclick="switchTab('activity')">◷ View in Activity Tab →</button>
+      </div>`;
     toast('Transcription started');
+    pollJobs();
 
     const timer = setInterval(async () => {
       try {
@@ -2115,8 +2122,14 @@ async function startCompressionDemo() {
     if (!res.ok) throw new Error(data.detail || 'Compression failed');
 
     const taskId = data.task_id;
-    notice.textContent = `Compressing ${count} file(s) via FFmpeg… (Task: ${taskId})`;
+    if (btn) btn.disabled = false;
+    notice.innerHTML = `<div>⚡ <strong>Compression task started (${taskId})</strong> for ${count} file(s). Running via FFmpeg…</div>
+      <div class="notice-actions" style="margin-top:6px;">
+        <button type="button" class="action-button" onclick="switchTab('activity')">◷ View in Activity Tab →</button>
+      </div>`;
     toast('Compression started');
+    clearCompressionFiles();
+    pollJobs();
 
     const timer = setInterval(async () => {
       try {
@@ -2244,8 +2257,14 @@ async function startConversionDemo() {
     if (!res.ok) throw new Error(data.detail || 'Conversion failed');
 
     const taskId = data.task_id;
-    notice.textContent = `Converting ${count} file(s) to ${targetFmt.toUpperCase()}… (Task: ${taskId})`;
+    if (btn) btn.disabled = false;
+    notice.innerHTML = `<div>⚡ <strong>Conversion task started (${taskId})</strong> for ${count} file(s). Running in background…</div>
+      <div class="notice-actions" style="margin-top:6px;">
+        <button type="button" class="action-button" onclick="switchTab('activity')">◷ View in Activity Tab →</button>
+      </div>`;
     toast('Conversion started');
+    clearConversionFiles();
+    pollJobs();
 
     const timer = setInterval(async () => {
       try {
@@ -2589,7 +2608,8 @@ function setJobFilter(filter) {
 function matchingJobs() {
   return jobs.filter(j =>
     jobFilter === 'all' ||
-    (jobFilter === 'active' && ACTIVE.includes(j.status)) ||
+    (jobFilter === 'active' && ['starting', 'downloading', 'retrying', 'converting', 'processing'].includes(j.status)) ||
+    (jobFilter === 'queued' && j.status === 'queued') ||
     (jobFilter === 'completed' && j.status === 'completed') ||
     (jobFilter === 'failed' && ['failed', 'cancelled'].includes(j.status))
   );
@@ -2603,6 +2623,7 @@ function jobMarkup(j) {
   const failed = ['failed', 'cancelled'].includes(status);
   const safeId = encodeURIComponent(j.id);
   const actions = [];
+  if (status === 'queued') actions.push(`<button type="button" class="action-button" style="background:var(--accent);color:var(--bg);font-weight:700" data-job="${safeId}" data-action="start_now">▶ Start Now</button>`);
   if (['starting', 'downloading'].includes(status)) actions.push(`<button type="button" class="action-button" data-job="${safeId}" data-action="pause">Pause</button>`);
   if (status === 'paused') actions.push(`<button type="button" class="action-button" data-job="${safeId}" data-action="resume">Resume</button>`);
   if (failed && j.task_type === 'download') actions.push(`<button type="button" class="action-button" data-job="${safeId}" data-action="retry">Retry</button>`);
@@ -2655,6 +2676,12 @@ function renderJobs() {
   if (sideBadge) {
     sideBadge.textContent = active;
     sideBadge.hidden = active === 0;
+  }
+  const queuedCount = jobs.filter(j => j.status === 'queued').length;
+  const queuedBadge = $('queuedFilterCount');
+  if (queuedBadge) {
+    queuedBadge.textContent = queuedCount;
+    queuedBadge.hidden = queuedCount === 0;
   }
 }
 
@@ -3558,9 +3585,9 @@ document.addEventListener('keydown', e => {
     else if (!$('videoModal').hidden) closeVideoModal();
     else if (!$('helpOverlay').hidden) closeHelp();
   }
-  if (e.altKey && ['1', '2', '3', '4'].includes(e.key)) {
+  if (e.altKey && ['1', '2', '3', '4', '5'].includes(e.key)) {
     e.preventDefault();
-    switchTab({ 1: 'downloads', 2: 'transcription', 3: 'tools', 4: 'library' }[e.key]);
+    switchTab({ 1: 'downloads', 2: 'transcription', 3: 'tools', 4: 'activity', 5: 'library' }[e.key]);
   }
   if (e.key === 'Enter' && document.activeElement === $('targetUrl')) {
     e.preventDefault();

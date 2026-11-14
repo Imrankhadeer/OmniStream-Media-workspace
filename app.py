@@ -341,6 +341,11 @@ async def resume_job(job_id: str):
     success = DownloadManager.resume_job(job_id)
     return {"status": "resumed" if success else "failed"}
 
+@app.post("/api/job/{job_id}/start_now")
+async def start_now_job_endpoint(job_id: str):
+    success = DownloadManager.start_now_job(job_id)
+    return {"status": "started" if success else "failed"}
+
 @app.post("/api/job/{job_id}/retry")
 async def retry_job(job_id: str):
     success = DownloadManager.retry_job(job_id)

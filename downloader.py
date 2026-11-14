@@ -48,8 +48,104 @@ os.makedirs(DEFAULT_DOWNLOAD_DIR, exist_ok=True)
 # In-memory storage synced with SQLite database
 jobs = {}
 active_job_ids = set()
-MAX_CONCURRENT_ACTIVE_DOWNLOADS = 4
-_DOWNLOAD_SEMAPHORE = threading.Semaphore(MAX_CONCURRENT_ACTIVE_DOWNLOADS)
+
+class SmartDownloadQueue:
+    """Intelligent concurrency controller that balances multi-stream speed & resource limits.
+    Allows up to 2 high-bitrate video streams concurrently to maximize throughput without thrashing,
+    while allowing lightweight audio or clipped tasks to run in parallel up to 4 total concurrent tasks.
+    Extra requests automatically wait in a prioritized FIFO queue."""
+    def __init__(self, max_concurrent_heavy: int = 2, max_concurrent_total: int = 4):
+        self.max_concurrent_heavy = max_concurrent_heavy
+        self.max_concurrent_total = max_concurrent_total
+        self.lock = threading.Condition()
+        self.active_jobs = set()
+        self.waiting_queue = []  # list of {'id': str, 'is_heavy': bool, 'event': Event}
+
+    def is_heavy_job(self, format_id: str) -> bool:
+        return (format_id or '').lower() != 'audio_only'
+
+    def can_run_job(self, is_heavy: bool) -> bool:
+        if len(self.active_jobs) >= self.max_concurrent_total:
+            return False
+        if is_heavy:
+            active_heavy = sum(
+                1 for jid in self.active_jobs
+                if self.is_heavy_job(jobs.get(jid, {}).get('format_id', 'best'))
+            )
+            if active_heavy >= self.max_concurrent_heavy:
+                return False
+        return True
+
+    def acquire(self, job_id: str, format_id: str) -> bool:
+        is_heavy = self.is_heavy_job(format_id)
+        with self.lock:
+            # If no queue and capacity permits, run immediately (e.g. download both at once)
+            if not self.waiting_queue and self.can_run_job(is_heavy):
+                self.active_jobs.add(job_id)
+                return True
+
+            # Otherwise register in waiting queue
+            evt = threading.Event()
+            self.waiting_queue.append({'id': job_id, 'is_heavy': is_heavy, 'event': evt})
+            self._update_queue_metadata()
+
+        while True:
+            evt.wait(timeout=1.0)
+            status = jobs.get(job_id, {}).get('status')
+            if status in ('cancelled', 'failed'):
+                with self.lock:
+                    self.waiting_queue = [item for item in self.waiting_queue if item['id'] != job_id]
+                    self.active_jobs.discard(job_id)
+                    self._update_queue_metadata()
+                return False
+            with self.lock:
+                if job_id in self.active_jobs:
+                    return True
+
+    def release(self, job_id: str):
+        with self.lock:
+            self.active_jobs.discard(job_id)
+            self._schedule_next_under_lock()
+            self._update_queue_metadata()
+
+    def force_start(self, job_id: str) -> bool:
+        with self.lock:
+            for i, item in enumerate(self.waiting_queue):
+                if item['id'] == job_id:
+                    self.waiting_queue.pop(i)
+                    self.active_jobs.add(job_id)
+                    item['event'].set()
+                    self._update_queue_metadata()
+                    return True
+        return False
+
+    def remove(self, job_id: str):
+        with self.lock:
+            self.waiting_queue = [item for item in self.waiting_queue if item['id'] != job_id]
+            self.active_jobs.discard(job_id)
+            self._schedule_next_under_lock()
+            self._update_queue_metadata()
+
+    def _schedule_next_under_lock(self):
+        for i, item in enumerate(self.waiting_queue):
+            if self.can_run_job(item['is_heavy']):
+                self.waiting_queue.pop(i)
+                self.active_jobs.add(item['id'])
+                item['event'].set()
+                return
+
+    def _update_queue_metadata(self):
+        for idx, item in enumerate(self.waiting_queue):
+            jid = item['id']
+            if jid in jobs and jobs[jid].get('status') == 'queued':
+                pos = idx + 1
+                reason = "Waiting for active video slot" if item['is_heavy'] else "Waiting for concurrency slot"
+                jobs[jid]['speed'] = f'Queued (#{pos})'
+                jobs[jid]['eta'] = f'#{pos} in line'
+                jobs[jid]['size_str'] = f'Queued (#{pos}) · {reason}'
+                db.update_job_progress(jid, status='queued', speed=jobs[jid]['speed'], eta=jobs[jid]['eta'], size_str=jobs[jid]['size_str'])
+
+_DOWNLOAD_QUEUE = SmartDownloadQueue(max_concurrent_heavy=2, max_concurrent_total=4)
 
 def format_bytes(bytes_num: float) -> str:
     """Format bytes into human-readable B, KB, MB, GB."""
@@ -371,6 +467,7 @@ class DownloadManager:
 
     @staticmethod
     def cancel_job(job_id: str) -> bool:
+        _DOWNLOAD_QUEUE.remove(job_id)
         if job_id in jobs:
             try:
                 jobs[job_id]['status'] = 'cancelled'
@@ -397,6 +494,11 @@ class DownloadManager:
         return False
 
     @staticmethod
+    def start_now_job(job_id: str) -> bool:
+        """Allow user to bypass queue order and start immediately."""
+        return _DOWNLOAD_QUEUE.force_start(job_id)
+
+    @staticmethod
     def _run_download_task(job_id: str, url: str, format_id: str, referer: str, user_agent: str, custom_title: str, cookies: str = None, start_time: str = None, end_time: str = None):
         if job_id in active_job_ids:
             return
@@ -405,45 +507,53 @@ class DownloadManager:
         # Mark as queued until a concurrency slot becomes available
         if jobs.get(job_id) and jobs[job_id].get('status') == 'starting':
             jobs[job_id]['status'] = 'queued'
+            jobs[job_id]['speed'] = 'Queued'
+            jobs[job_id]['size_str'] = 'In Queue'
             db.update_job_progress(job_id, status='queued')
+
+        acquired = _DOWNLOAD_QUEUE.acquire(job_id, format_id)
+        if not acquired or jobs.get(job_id, {}).get('status') in ('cancelled', 'failed'):
+            active_job_ids.discard(job_id)
+            return
 
         max_attempts = 10
         try:
-            with _DOWNLOAD_SEMAPHORE:
-                if jobs.get(job_id):
-                    jobs[job_id]['status'] = 'starting'
-                    db.update_job_progress(job_id, status='starting')
+            if jobs.get(job_id):
+                jobs[job_id]['status'] = 'starting'
+                jobs[job_id]['speed'] = 'Starting…'
+                db.update_job_progress(job_id, status='starting')
 
-                for attempt in range(max_attempts):
-                    if jobs[job_id]['status'] == 'cancelled':
+            for attempt in range(max_attempts):
+                if jobs[job_id]['status'] == 'cancelled':
+                    return
+
+                try:
+                    DownloadManager._execute_download_attempt(
+                        job_id, url, format_id, referer, user_agent, custom_title, cookies, start_time, end_time
+                    )
+                    # If completed without exception
+                    if jobs[job_id]['status'] == 'completed':
+                        return
+                except Exception as e:
+                    if jobs[job_id]['status'] in ['cancelled', 'completed']:
                         return
 
-                    try:
-                        DownloadManager._execute_download_attempt(
-                            job_id, url, format_id, referer, user_agent, custom_title, cookies, start_time, end_time
-                        )
-                        # If completed without exception
-                        if jobs[job_id]['status'] == 'completed':
-                            return
-                    except Exception as e:
-                        if jobs[job_id]['status'] in ['cancelled', 'completed']:
-                            return
-
-                        err_str = str(e)
-                        jobs[job_id]['retries'] = attempt + 1
-                        if attempt < max_attempts - 1:
-                            jobs[job_id]['status'] = 'retrying'
-                            if any(k in err_str for k in ['572', '403', 'Forbidden', 'token']):
-                                jobs[job_id]['error'] = f"Stream token expired (HTTP 572). Refreshing token and resuming... (Attempt {attempt+1}/{max_attempts})"
-                            else:
-                                jobs[job_id]['error'] = f"Connection interrupted. Auto-resuming in 3s... (Attempt {attempt+1}/{max_attempts})"
-                            db.save_job(jobs[job_id])
-                            time.sleep(3)
+                    err_str = str(e)
+                    jobs[job_id]['retries'] = attempt + 1
+                    if attempt < max_attempts - 1:
+                        jobs[job_id]['status'] = 'retrying'
+                        if any(k in err_str for k in ['572', '403', 'Forbidden', 'token']):
+                            jobs[job_id]['error'] = f"Stream token expired (HTTP 572). Refreshing token and resuming... (Attempt {attempt+1}/{max_attempts})"
                         else:
-                            jobs[job_id]['status'] = 'failed'
-                            jobs[job_id]['error'] = format_friendly_error(err_str, url)
-                            db.save_job(jobs[job_id])
+                            jobs[job_id]['error'] = f"Connection interrupted. Auto-resuming in 3s... (Attempt {attempt+1}/{max_attempts})"
+                        db.save_job(jobs[job_id])
+                        time.sleep(3)
+                    else:
+                        jobs[job_id]['status'] = 'failed'
+                        jobs[job_id]['error'] = format_friendly_error(err_str, url)
+                        db.save_job(jobs[job_id])
         finally:
+            _DOWNLOAD_QUEUE.release(job_id)
             active_job_ids.discard(job_id)
 
     @staticmethod
