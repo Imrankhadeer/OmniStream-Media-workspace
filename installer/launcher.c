@@ -1,10 +1,23 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <shellapi.h>
+#include <shlobj.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef HRESULT (WINAPI *SetAppIDFunc)(PCWSTR);
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    // Set explicit AppUserModelID so Windows groups process under OmniStream
+    HMODULE hShell = LoadLibraryA("shell32.dll");
+    if (hShell) {
+        SetAppIDFunc setAppId = (SetAppIDFunc)GetProcAddress(hShell, "SetCurrentProcessExplicitAppUserModelID");
+        if (setAppId) {
+            setAppId(L"OmniStream.Workstation.App.2.1");
+        }
+        FreeLibrary(hShell);
+    }
+
     char exePath[MAX_PATH];
     GetModuleFileNameA(NULL, exePath, MAX_PATH);
     char *lastBackslash = strrchr(exePath, '\\');
@@ -13,12 +26,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     SetCurrentDirectoryA(exePath);
 
+    // Prefer pythonw.exe so Windows doesn't create any unskinned Python console window
     char pythonPath[MAX_PATH];
-    snprintf(pythonPath, MAX_PATH, "%s\\.venv\\Scripts\\python.exe", exePath);
+    snprintf(pythonPath, MAX_PATH, "%s\\.venv\\Scripts\\pythonw.exe", exePath);
     
     DWORD fileAttr = GetFileAttributesA(pythonPath);
     if (fileAttr == INVALID_FILE_ATTRIBUTES) {
-        strcpy(pythonPath, "python.exe");
+        // Fallback to python.exe in .venv
+        snprintf(pythonPath, MAX_PATH, "%s\\.venv\\Scripts\\python.exe", exePath);
+        fileAttr = GetFileAttributesA(pythonPath);
+        if (fileAttr == INVALID_FILE_ATTRIBUTES) {
+            strcpy(pythonPath, "pythonw.exe");
+        }
     }
 
     char cmdLine[MAX_PATH * 2];
