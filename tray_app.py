@@ -58,32 +58,42 @@ def open_downloads_folder():
             os.startfile(d_dir)
 
 def check_for_updates():
-    try:
-        import updater
-        res = updater.check_updates()
-        msg = res.get("message", "OmniStream is up to date.")
-        if res.get("ytdlp_update_available"):
-            msg += f"\n\nNew yt-dlp version available: {res.get('latest_ytdlp_version')}"
-        if sys.platform == "win32":
-            ctypes.windll.user32.MessageBoxW(0, msg, "OmniStream Updates", MB_ICONINFORMATION)
-    except Exception as e:
-        if sys.platform == "win32":
-            ctypes.windll.user32.MessageBoxW(0, f"Error checking updates: {e}", "OmniStream Updates", 0)
+    def _do_check():
+        try:
+            import updater
+            res = updater.check_updates()
+            msg = res.get("message", "OmniStream is up to date.")
+            if res.get("ytdlp_update_available"):
+                msg += f"\n\nNew yt-dlp version available: {res.get('latest_ytdlp_version')}"
+            if sys.platform == "win32":
+                ctypes.windll.user32.MessageBoxW(0, msg, "OmniStream Updates", MB_ICONINFORMATION | 0x00040000 | 0x00010000)
+        except Exception as e:
+            if sys.platform == "win32":
+                ctypes.windll.user32.MessageBoxW(0, f"Error checking updates: {e}", "OmniStream Updates", 0x00040000 | 0x00010000)
+    threading.Thread(target=_do_check, daemon=True).start()
 
 def exit_app(icon, item):
-    if sys.platform == "win32":
-        ret = ctypes.windll.user32.MessageBoxW(
-            0,
-            "Are you sure you want to stop OmniStream?\n\nAny active downloads will be stopped.",
-            "Exit OmniStream",
-            MB_YESNO | MB_ICONQUESTION
-        )
-        if ret != IDYES:
-            return
+    def _do_exit():
+        # Running dialog in a separate thread lets the tray popup menu close immediately,
+        # preventing any Windows UI freeze or unreleased mouse capture!
+        if sys.platform == "win32":
+            ret = ctypes.windll.user32.MessageBoxW(
+                0,
+                "Are you sure you want to stop OmniStream?\n\nAny active downloads will be stopped.",
+                "Exit OmniStream",
+                MB_YESNO | MB_ICONQUESTION | 0x00040000 | 0x00010000  # MB_TOPMOST | MB_SETFOREGROUND
+            )
+            if ret != IDYES:
+                return
 
-    # Graceful shutdown
-    icon.stop()
-    os._exit(0)
+        # Stop tray icon and terminate process cleanly
+        try:
+            icon.stop()
+        except Exception:
+            pass
+        os._exit(0)
+
+    threading.Thread(target=_do_exit, daemon=True).start()
 
 def wait_for_server_and_open():
     """Poll the backend API until it is 100% ready before opening the browser.
